@@ -6,13 +6,6 @@ Notes on working with the milk v duo s linux
 - https://community.milkv.io/t/how-to-get-the-operating-system-on-the-emmc/1634
 - https://milkv.io/docs/duo/getting-started/duos
 
-```
-df -h # confirm sd card device, in my case it is /dev/sda
-sudo fdisk /dev/sda # run fdisk on sd card
-# select (o) DOS partition table
-# select (n)
-# select (t) then (ef) for EFI (FAT 32)
-```
 
 ## Installing the Debian image on Duo S EMMC
 I Followed this guide https://community.milkv.io/t/how-to-get-the-operating-system-on-the-emmc/1634
