@@ -95,4 +95,28 @@ debian@duos:~$ neofetch
 ```
 2. `sudo apt install python3 python3-venv python3-pip`
 
+### Working with I2C based sensors and other external devices
+
+1. Install i2c-tools: `sudo apt install i2c-tools`
+2. The 'big core' is exposed to three i2c interfaces (2, 3, and 4). I am guessing that i2c-1 is reserved for the small core.
+```
+debian@duos:~$ ls /dev/i2c-*
+/dev/i2c-2  /dev/i2c-3	/dev/i2c-4
+```
+3. The I2C pins are exposed on Header J3, see pinout here https://milkv.io/docs/duo/getting-started/duos#duos-gpio-pinout
+4. Scanning and detecting I2C devices: I connected a BMP280 sensor to I2C-2 and did a `i2cdetect`
+```
+debian@duos:~$ sudo i2cdetect -y -r 2
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+00:                         -- -- -- -- -- -- -- -- 
+10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+40: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+70: -- -- -- -- -- -- -- --
+```
+And found nothing :( TBC. Tried with I2C-4 and got same outcome :(
+
 
