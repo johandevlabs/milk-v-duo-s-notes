@@ -188,3 +188,10 @@ debian@duos:~$ sudo i2cdetect -y -r 4
 70: -- -- -- -- -- -- 76 --
 ```
 Works!
+
+#### ADS1015
+
+```
+# add user to i2c group to have read / write access
+sudo usermod -G i2c debian
+```
