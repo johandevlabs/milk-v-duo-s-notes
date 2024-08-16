@@ -194,4 +194,14 @@ Works!
 ```
 # add user to i2c group to have read / write access
 sudo usermod -G i2c debian
+# setup python venv
+mkdir pyvenv
+cd pyvenv
+python3 -m venv .venv
+source .venv/bin/activate
+```
+inside the python venv, do
+```
+pip install Adafruit-ADS1x15
+nano ./venv/lib/python3.12/site-packages/ADS1x15.py # i2c = SMBus(1) -> i2c = SMBus(4)
 ```
