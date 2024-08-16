@@ -133,7 +133,9 @@ A17
 C15
 C12
 C13
-
+```
+3. The pinout can now be updated with 'Milk V Buildroot' version of duo-pinmux and the I2C device is detected!
+```
 debian@duos:~$ sudo ./duo-pinmux -w B20/IIC4_SCL
 pin B20
 func IIC4_SCL
