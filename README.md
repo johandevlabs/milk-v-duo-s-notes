@@ -120,4 +120,69 @@ debian@duos:~$ sudo i2cdetect -y -r 2
 And found nothing :( TBC. Tried with I2C-4 and got same outcome :(
 I think the issue has to due with pin-multiplexing - not sure. My working theory as that i2c has not been enabled on the target i2c pins. Unfortunately `duo-pinmux` on the Debian image does not appear to work correctly, it is printing a pinout that seem to match the Milk V Duo (64MB) rather than the Milk V Duo S. When I run `duo-pinmux` using the Milk V provided Buildroot image, I get very different pinout that seems to match the actual pinout on the Duo S.
 
+I can manually get a working version of duo-pinmux by doing the follow
 
+1. Copy `duo-pinmux` and `ld-musl-riscv64v0p7_xthead.so.1` from the latest Milk V buildroot (1.2) image (`/usr/bin/duo-pinmux` and `/lib/ld-musl-riscv64v0p7_xthead.so.1`), to the corresponding debian folders
+2. Run duo-pinmux and see correct pinout
+```
+debian@duos:~$ sudo ./duo-pinmux -p
+Pinlist:
+A16
+A17
+...
+C15
+C12
+C13
+
+debian@duos:~$ sudo ./duo-pinmux -w B20/IIC4_SCL
+pin B20
+func IIC4_SCL
+register: 3001158
+value: 7
+
+debian@duos:~$ sudo ./duo-pinmux -r B20
+B20 function:
+[ ] VI2_D_1
+[ ] VI1_D_1
+[ ] VO_D_14
+[ ] B20
+[ ] RMII0_RXDV
+[ ] IIC3_SDA
+[ ] PWM_3
+[v] IIC4_SCL
+
+register: 0x3001158
+value: 7
+
+debian@duos:~$ sudo ./duo-pinmux -w B21/IIC4_SDA
+pin B21
+func IIC4_SDA
+register: 300115c
+value: 7
+
+debian@duos:~$ sudo ./duo-pinmux -r B20
+B21 function:
+[ ] VI2_D_0
+[ ] VI1_D_0
+[ ] VO_D_13
+[ ] B21
+[ ] RMII0_TXCLK
+[ ] IIC3_SCL
+[ ] WG1_D0
+[v] IIC4_SDA
+
+register: 0x300115c
+value: 7
+
+debian@duos:~$ sudo i2cdetect -y -r 4
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+00:                         -- -- -- -- -- -- -- -- 
+10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+40: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+70: -- -- -- -- -- -- 76 --
+```
+Works!
