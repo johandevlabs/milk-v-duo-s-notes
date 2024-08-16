@@ -118,5 +118,6 @@ debian@duos:~$ sudo i2cdetect -y -r 2
 70: -- -- -- -- -- -- -- --
 ```
 And found nothing :( TBC. Tried with I2C-4 and got same outcome :(
+I think the issue has to due with pin-multiplexing - not sure. My working theory as that i2c has not been enabled on the target i2c pins. Unfortunately `duo-pinmux` on the Debian image does not appear to work correctly, it is printing a pinout that seem to match the Milk V Duo (64MB) rather than the Milk V Duo S. When I run `duo-pinmux` using the Milk V provided Buildroot image, I get very different pinout that seems to match the actual pinout on the Duo S.
 
 
