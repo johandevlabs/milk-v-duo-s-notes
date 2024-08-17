@@ -241,7 +241,7 @@ Refere also to the Duo S documentation and pinout (https://milkv.io/docs/duo/get
 
 **Care should taken when working with GPIOs as many be used for system critical functions and manipulating the wrong GPIO may screw up your system. see also https://www.udoo.org/forum/threads/gpio-permissions-for-libgpiod-sudo-or-not.32453/ - Also note that some PINs are running at 3.3V logic level and others at 1.8V - be careful**
 
-In the following I will try to expose 4 GPIOs from `XGPIOA` exposed on J3 that we can worked with in a safe way at 3.3V logic level. I have selected A18, A19, A20, A28 as these are already by default set to GPIO state in pinmux and do not appear to be used by anything else.
+In the following I will give user read/write access to to gpio0. I will be working with 4 GPIOs on `XGPIOA` exposed on J3 running at 3.3V logic level. I have selected A18, A19, A20, A28 as these are already by default set to GPIO state in pinmux and do not appear to be used by anything else.
 
 ### GPIO pin mapping
 
@@ -269,3 +269,39 @@ sudo chown root.gpio /dev/gpiochip0
 sudo chmod g+rw /dev/gpiochip0
 ```
 The members of group `gpio` can now read/write to the GPIOs in gpio0 (i.e. `gpioset gpiochip0 28=0` without root permissions)
+
+#### Manipulating GPIOs in Python
+See also this documentation https://pypi.org/project/gpiod/
+
+First made sure python3-dev was install
+```
+sudo apt install python3-dev
+```
+then I switched over to my python venv and installed `gpiod`
+```
+source .venv/bin/activate
+pip install gpiod
+```
+I then created the following example script (`simple_gpio.py`)
+```
+import time
+import gpiod
+
+A18, A19, A20, A28 = 18, 19, 20, 28
+lines = [A18, A19, A20, A28]
+chip_path = "/dev/gpiochip0"
+cons = "example"
+
+gpios=gpiod.request_lines(chip_path,consumer=cons,config={
+  tuple(lines): gpiod.LineSettings(
+    direction=gpiod.line.Direction.OUTPUT,
+    output_value=gpiod.line.Value.INACTIVE)
+})
+
+for line in lines:
+  gpios.set_value(line, gpiod.line.Value.ACTIVE)
+  time.sleep(1)
+  gpios.set_value(line, gpiod.line.Value.INACTIVE)
+
+```
+running it produces the expected outcome
