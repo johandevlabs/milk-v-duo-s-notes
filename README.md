@@ -95,7 +95,7 @@ debian@duos:~$ neofetch
 ```
 2. `sudo apt install python3 python3-venv python3-pip`
 
-### Working with I2C based sensors and other external devices
+## Working with I2C based sensors and other external devices
 
 1. Install i2c-tools: `sudo apt install i2c-tools`
 2. The 'big core' is exposed to three i2c interfaces (2, 3, and 4). I am guessing that i2c-1 is reserved for the small core.
@@ -189,11 +189,11 @@ debian@duos:~$ sudo i2cdetect -y -r 4
 ```
 Works!
 
-#### ADS1015
+### ADS1015
 
 ```
 # add user to i2c group to have read / write access
-sudo usermod -G i2c debian
+sudo usermod -a -G i2c debian
 # setup python venv
 mkdir pyvenv
 cd pyvenv
@@ -205,3 +205,50 @@ inside the python venv, do
 pip install Adafruit-ADS1x15
 nano ./venv/lib/python3.12/site-packages/ADS1x15.py # i2c = SMBus(1) -> i2c = SMBus(4)
 ```
+then i created a little python script `simple_ads.py`
+```
+import time
+import ADS1x15
+
+ADS = ADS1x15.ADS1015(4)
+ADS.setGain(ADS.PGA_4_096V)
+
+while True :
+    raw = ADS.readADC(0)
+    print("{0:.3f} V".format(ADS.toVoltage(raw)))
+    time.sleep(1)
+```
+running it produces the expected outcome
+```
+(.venv) debian@duos:~/projects/pyvenv$ python3 simply_ads.py 
+2.547 V
+2.547 V
+2.547 V
+```
+
+## Working with GPIOs 
+The OS exposes 5 seperate 'GPIO chips', i.e.
+```
+debian@duos:~$ sudo gpiodetect 
+gpiochip0 [3020000.gpio] (32 lines)
+gpiochip1 [3021000.gpio] (32 lines)
+gpiochip2 [3022000.gpio] (32 lines)
+gpiochip3 [3023000.gpio] (32 lines)
+gpiochip4 [5021000.gpio] (32 lines)
+```
+each of these control a group of GPIOs. 
+Refere also to the Duo S documentation and pinout (https://milkv.io/docs/duo/getting-started/duos#gpio-pin-mapping). 
+
+**Care should taken when working with GPIOs as many be used for system critical functions and manipulating the wrong GPIO may screw up your system. see also https://www.udoo.org/forum/threads/gpio-permissions-for-libgpiod-sudo-or-not.32453/ - Also note that some PINs are running at 3.3V logic level and others at 1.8V - be careful**
+
+In the following I will try to expose 4 GPIOs from `XGPIOB` that can we worked with in a safe way at 3.3V logic level.
+
+### GPIO pin mapping
+
+| GROUP | ADDR | PORT | CHIP | NUM | NAME | START |
+| ----- | ----- | ----- | ----- | ----- | ----- | ----- |
+| gpio0 | gpio@03020000 | porta | gpiochip0 | 480-511 | XGPIOA | 480 - XGPIOA[0] |
+| gpio1 | gpio@03021000 | portb | gpiochip1 | 448-479 | XGPIOB | 448 - XGPIOB[0] |
+| gpio2 | gpio@03022000 | portc | gpiochip2 | 416-447 | XGPIOC | 416 - XGPIOC[0] |
+| gpio3 | gpio@03023000 | portd | gpiochip3 | 384-415 |  |  |
+| gpio4 | gpio@05021000 | porte | gpiochip4 | 352-383 | PWR_GPIO | 352 - PWR_GPIO[0] |
