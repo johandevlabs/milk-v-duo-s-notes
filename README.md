@@ -261,4 +261,11 @@ Example A28 (gpiochip0 line 28)
 debian@duos:~$ sudo gpioset gpiochip0 28=1
 debian@duos:~$ sudo gpioset gpiochip0 28=0
 ```
-
+To enable ´$USER´ (e.g. `debian` in my case) to have read/write access to GPIO group 0, I did
+```
+sudo addgroup gpio
+sudo usermod -a -G gpio debian
+sudo chown root.gpio /dev/gpiochip0
+sudo chmod g+rw /dev/gpiochip0
+```
+The members of group `gpio` can now read/write to the GPIOs in gpio0 (i.e. `gpioset gpiochip0 28=0` without root permissions)
