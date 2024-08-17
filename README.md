@@ -241,7 +241,7 @@ Refere also to the Duo S documentation and pinout (https://milkv.io/docs/duo/get
 
 **Care should taken when working with GPIOs as many be used for system critical functions and manipulating the wrong GPIO may screw up your system. see also https://www.udoo.org/forum/threads/gpio-permissions-for-libgpiod-sudo-or-not.32453/ - Also note that some PINs are running at 3.3V logic level and others at 1.8V - be careful**
 
-In the following I will try to expose 4 GPIOs from `XGPIOB` that can we worked with in a safe way at 3.3V logic level.
+In the following I will try to expose 4 GPIOs from `XGPIOA` exposed on J3 that we can worked with in a safe way at 3.3V logic level. I have selected A18, A19, A20, A28 as these are already by default set to GPIO state in pinmux and do not appear to be used by anything else.
 
 ### GPIO pin mapping
 
@@ -252,3 +252,6 @@ In the following I will try to expose 4 GPIOs from `XGPIOB` that can we worked w
 | gpio2 | gpio@03022000 | portc | gpiochip2 | 416-447 | XGPIOC | 416 - XGPIOC[0] |
 | gpio3 | gpio@03023000 | portd | gpiochip3 | 384-415 |  |  |
 | gpio4 | gpio@05021000 | porte | gpiochip4 | 352-383 | PWR_GPIO | 352 - PWR_GPIO[0] |
+
+![Screenshot from 2024-08-17 10-49-17](https://github.com/user-attachments/assets/372002f9-3a9c-4e39-aec6-4621cd294433)
+
