@@ -255,3 +255,10 @@ In the following I will try to expose 4 GPIOs from `XGPIOA` exposed on J3 that w
 
 ![Screenshot from 2024-08-17 10-49-17](https://github.com/user-attachments/assets/372002f9-3a9c-4e39-aec6-4621cd294433)
 
+### Setting GPIOs 
+Example A28 (gpiochip0 line 28)
+```
+debian@duos:~$ sudo gpioset gpiochip0 28=1
+debian@duos:~$ sudo gpioset gpiochip0 28=0
+```
+
