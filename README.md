@@ -207,6 +207,8 @@ debian@duos:~$ sudo i2cdetect -y -r 4
 ```
 Works!
 
+**NOTE: After reboot, the pins will default back to original multiplex state.**
+
 ### ADS1015
 
 ```
