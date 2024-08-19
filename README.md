@@ -68,6 +68,24 @@ tmpfs           244M     0  244M   0% /tmp
 tmpfs            49M  4.0K   49M   1% /run/user/1000
 ```
 
+#### Adding SWAP
+The onboard 512MB ram is more than sufficient most (of my) usecases. However, for a few tasks (e.g. `pip install numpy`) memory may run out. Swap can be added either as a partion or as a file. I chose the latter, since I will only be using it temporarily and then removing it again. See https://wiki.debian.org/Swap
+
+```
+sudo mkdir /var/swap
+sudo dd if=/dev/zero of=/var/swap/512mb.swp bs=1025 count=524288
+sudo chmod 600 /var/swap/512mb.swp
+sudo mkswap /var/swap/512mb.swp
+sudo swapon /var/swap/512mb.swp
+free -m # inspect to confirm the swap
+```
+
+To keep swap enabled after reboot, add the following to `/etc/fstab`:
+```
+# Swap file created on DATE
+/var/swap/512mb.swp       none    swap    sw      0       0
+```
+
 ### Updating the system and installing additional software
 
 I am bit concerned about using Sid rather than Stable or Testing. Care should be taken when upgrading or updating the system. Note to self: Inspect apt output before selecting `Y` and never use the `-y` option when running apt.
