@@ -116,12 +116,12 @@ debian@duos:~$ neofetch
 ## Working with I2C based sensors and other external devices
 
 1. Install i2c-tools: `sudo apt install i2c-tools`
-2. The 'big core' is exposed to three i2c interfaces (2, 3, and 4). I am guessing that i2c-1 is reserved for the small core.
+2. Only three of the four i2c interfaces (2, 3, and 4) are visible. 
 ```
 debian@duos:~$ ls /dev/i2c-*
 /dev/i2c-2  /dev/i2c-3	/dev/i2c-4
 ```
-3. The I2C pins are exposed on Header J3, see pinout here https://milkv.io/docs/duo/getting-started/duos#duos-gpio-pinout
+3. The some the I2C pins are exposed on Header J3, see pinout here https://milkv.io/docs/duo/getting-started/duos#duos-gpio-pinout
 4. Scanning and detecting I2C devices: I connected a BMP280 sensor to I2C-2 and did a `i2cdetect`
 ```
 debian@duos:~$ sudo i2cdetect -y -r 2
@@ -135,8 +135,8 @@ debian@duos:~$ sudo i2cdetect -y -r 2
 60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 70: -- -- -- -- -- -- -- --
 ```
-And found nothing :( TBC. Tried with I2C-4 and got same outcome :(
-I think the issue has to due with pin-multiplexing - not sure. My working theory as that i2c has not been enabled on the target i2c pins. Unfortunately `duo-pinmux` on the Debian image does not appear to work correctly, it is printing a pinout that seem to match the Milk V Duo (64MB) rather than the Milk V Duo S. When I run `duo-pinmux` using the Milk V provided Buildroot image, I get very different pinout that seems to match the actual pinout on the Duo S.
+And found nothing :( Tried with I2C-4 and got same outcome :(
+UPDATE: The issue has to due with pin-multiplexing. The i2c pins on J3 are set to non-I2C modes. Unfortunately `duo-pinmux` on the Debian image does not appear to work correctly, it is printing a pinout that seem to match the Milk V Duo (64MB) rather than the Milk V Duo S. To circumvent this I used the `duo-pinmux` program provided by the Milk V Buildroot image (I get very different pinout that seems to match the actual pinout on the Duo S).
 
 I can manually get a working version of duo-pinmux by doing the follow
 
@@ -220,10 +220,10 @@ cd pyvenv
 python3 -m venv .venv
 source .venv/bin/activate
 ```
-inside the python venv, do
+inside the python venv environment, do
 ```
-pip install Adafruit-ADS1x15
-nano ./venv/lib/python3.12/site-packages/ADS1x15.py # i2c = SMBus(1) -> i2c = SMBus(4)
+pip install ADS1x15-ADC
+nano ./venv/lib/python3.12/site-packages/ADS1x15.py # change i2c = SMBus(1) to i2c = SMBus(4)
 ```
 then i created a little python script `simple_ads.py`
 ```
