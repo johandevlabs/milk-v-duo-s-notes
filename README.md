@@ -250,6 +250,7 @@ running it produces the expected outcome
 I hooked up a SSD1306 I2C OLED display to I2C-4. I found that the easiest way to work with display was to compile the ARMLabs ssd1306_linux library and work directly 
 
 - This thread was really useful https://community.milkv.io/t/milk-v-duo-i2c-ssd1306-with-user-space-driver/323
+- https://github.com/armlabs/ssd1306_linux very useful, gives list of options
 
 Compiling with `gcc` is straight forward. I did not have access to TinyCC.
 ```
