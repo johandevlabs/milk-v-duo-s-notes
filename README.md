@@ -246,6 +246,24 @@ running it produces the expected outcome
 2.547 V
 ```
 
+### SSD1306 (a 128x32 OLED display)
+I hooked up a SSD1306 I2C OLED display to I2C-4. I found that the easiest way to work with display was to compile the ARMLabs ssd1306_linux library and work directly 
+
+- This thread was really useful https://community.milkv.io/t/milk-v-duo-i2c-ssd1306-with-user-space-driver/323
+
+Compiling with `gcc` is straight forward. I did not have access to TinyCC.
+```
+git clone https://github.com/armlabs/ssd1306_linux.git
+cd ssd1306_linux/
+gcc -o ssd1306.o -r ssd1306.c -I .
+gcc -o linux_i2c.o -r linux_i2c.c -I .
+gcc -o ssd1306 main.c linux_i2c.o ssd1306.o -I .
+./ssd1306 -n 4 -I 128x32
+./ssd1306 -n 4 -c
+./ssd1306 -n 4 -m "OMG it really works!"
+```
+Note, I have to set option `-n 4` because I am using `/dev/i2c-4`.
+
 ## Working with GPIOs 
 The OS exposes 5 seperate 'GPIO chips', i.e.
 ```
